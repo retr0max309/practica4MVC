@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pr4MVC.Models
 {
@@ -13,6 +15,8 @@ namespace Pr4MVC.Models
         public string? Description { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser positivo")]
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "El stock no puede ser negativo")]

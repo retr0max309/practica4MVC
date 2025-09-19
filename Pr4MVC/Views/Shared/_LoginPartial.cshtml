@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div>
+        <a href="@Url.Action("Logout", "Account")">Salir</a>
+    </div>
+}
+else
+{
+    <div>
+        <a href="@Url.Action("Login", "Account")">Ingresar</a>
+    </div>
+}

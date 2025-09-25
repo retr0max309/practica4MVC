@@ -13,25 +13,33 @@ namespace Pr4MVC.Data
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
 
-            builder.Entity<Order>()
-                .HasOne(o => o.Customer)
-                .WithMany()
-                .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasPrecision(18, 2);
 
-            builder.Entity<OrderItem>()
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Total)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.UnitPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.Subtotal)
+                .HasPrecision(18, 2);
+
+            
+            modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Product)
                 .WithMany()
-                .HasForeignKey(oi => oi.ProductId);
-
-            builder.Entity<OrderItem>()
-                .HasOne(oi => oi.Order)
-                .WithMany(o => o.Items)
-                .HasForeignKey(oi => oi.OrderId);
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
+
     }
 }

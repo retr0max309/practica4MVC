@@ -1,0 +1,77 @@
+﻿@model Pr4MVC.Models.Order
+@using Pr4MVC.Models
+
+@{
+    ViewData["Title"] = "Detalle del Pedido";
+    var isAdminOrEmpleado = User.IsInRole("admin") || User.IsInRole("empleado");
+    var estados = new[] { "Pendiente", "Procesado", "Enviado", "Entregado", "Cancelado" };
+}
+
+<h2>Pedido #@Model.Id</h2>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="mb-2">
+    <strong>Fecha:</strong> @Model.Date.ToLocalTime().ToString("yyyy-MM-dd HH:mm") <br />
+    <strong>Estado:</strong> @Model.Status <br />
+    <strong>Cliente:</strong> @Model.CustomerId
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th class="text-center">Cant.</th>
+            <th class="text-end">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var it in Model.Items)
+        {
+            <tr>
+                <td>@it.Product?.Name</td>
+                <td class="text-center">@it.Quantity</td>
+                <td class="text-end">@it.Subtotal.ToString("0.00")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="2" class="text-end">Total</th>
+            <th class="text-end">@Model.Total.ToString("0.00")</th>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="d-flex gap-2">
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+
+    @if (isAdminOrEmpleado)
+    {
+        <form asp-action="UpdateStatus" method="post" class="d-flex align-items-center gap-2">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <select name="status" class="form-select">
+                @foreach (var s in estados)
+                {
+                    <option value="@s" selected="@(s == Model.Status)">@s</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Cambiar estado</button>
+        </form>
+    }
+
+    @if (Model.Status == "Pendiente")
+    {
+        <form asp-action="Cancel" method="post" class="ms-auto">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-outline-danger">Cancelar</button>
+        </form>
+    }
+</div>

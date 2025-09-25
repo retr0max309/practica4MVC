@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Pr4MVC.Models.Order>
+
+@{
+    ViewData["Title"] = "Pedidos";
+    var isAdminOrEmpleado = User.IsInRole("admin") || User.IsInRole("empleado");
+}
+
+<h2>Pedidos</h2>
+
+<div class="mb-3">
+    <a class="btn btn-primary" asp-action="Create">Nuevo pedido</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            @if (isAdminOrEmpleado)
+            {
+                <th>Cliente</th>
+            }
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th class="text-end">Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.Id</td>
+                @if (isAdminOrEmpleado)
+                {
+                    <td>@o.CustomerId</td>
+                }
+                <td>@o.Date.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@o.Status</td>
+                <td class="text-end">@o.Total.ToString("0.00")</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@o.Id">Detalles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

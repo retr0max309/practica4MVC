@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Pr4MVC.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Usuarios";
+    var rolesByUser = (System.Collections.Generic.Dictionary<string, System.Collections.Generic.IList<string>>)ViewBag.RolesByUser;
+    var q = ViewBag.Query as string;
+}
+
+<h2>Usuarios</h2>
+
+<form method="get" class="mb-3 d-flex gap-2">
+    <input type="text" name="q" value="@q" class="form-control" placeholder="Buscar por email o usuario" />
+    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+    <a asp-action="Create" class="btn btn-primary ms-auto">Nuevo usuario</a>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            var roles = rolesByUser.ContainsKey(u.Id) ? string.Join(", ", rolesByUser[u.Id]) : "";
+            <tr>
+                <td>@u.FullName</td>
+                <td>@u.Email</td>
+                <td>@roles</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-dark" asp-action="Details" asp-route-id="@u.Id">Detalles</a>
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@u.Id">Editar</a>
+                    <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@u.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
